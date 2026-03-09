@@ -32,11 +32,66 @@
             z-index: 1;
         }
 
-        .ai-loop-canvas {
+        .mobius-stage {
             position: absolute;
             inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .mobius-stage canvas {
+            display: block;
             width: 100%;
             height: 100%;
+        }
+
+        .mobius-vignette {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 5;
+            background: radial-gradient(ellipse at 50% 55%, transparent 28%, rgba(10, 2, 2, 0.88) 100%);
+        }
+
+        .mobius-hud {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+            font-family: 'DM Mono', 'Courier New', monospace;
+        }
+
+        .mobius-readout {
+            position: absolute;
+            top: 32px;
+            right: 40px;
+            text-align: right;
+            color: rgba(198, 167, 94, 0.5);
+            font-size: 9px;
+            letter-spacing: 0.18em;
+            line-height: 2;
+        }
+
+        .mobius-corner {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            opacity: 0.35;
+        }
+
+        .mobius-corner.tl { top: 20px; left: 20px; border-top: 1px solid rgba(139, 0, 0, 0.7); border-left: 1px solid rgba(139, 0, 0, 0.7); }
+        .mobius-corner.tr { top: 20px; right: 20px; border-top: 1px solid rgba(139, 0, 0, 0.7); border-right: 1px solid rgba(139, 0, 0, 0.7); }
+        .mobius-corner.bl { bottom: 20px; left: 20px; border-bottom: 1px solid rgba(139, 0, 0, 0.7); border-left: 1px solid rgba(139, 0, 0, 0.7); }
+        .mobius-corner.br { bottom: 20px; right: 20px; border-bottom: 1px solid rgba(139, 0, 0, 0.7); border-right: 1px solid rgba(139, 0, 0, 0.7); }
+
+        @keyframes mobius-flicker {
+            0%, 100% { opacity: 1; }
+            94% { opacity: 1; }
+            94.3% { opacity: 0.3; }
+            94.6% { opacity: 1; }
+            98.5% { opacity: 1; }
+            98.8% { opacity: 0.2; }
+            99.1% { opacity: 1; }
         }
 
         .hero-overlay {
@@ -525,7 +580,21 @@
     <main>
         <section class="ai-hero" id="hero">
             <div class="hero-canvas-layer" aria-hidden="true">
-                <canvas id="ai-loop-canvas" class="ai-loop-canvas"></canvas>
+                <div class="mobius-stage">
+                    <canvas id="mobius-canvas" class="ai-loop-canvas"></canvas>
+                    <div class="mobius-vignette"></div>
+                    <div class="mobius-hud">
+                        <div class="mobius-corner tl"></div><div class="mobius-corner tr"></div>
+                        <div class="mobius-corner bl"></div><div class="mobius-corner br"></div>
+                        <div class="mobius-readout">
+                            QUANTUM TOPOLOGY<br>
+                            MÖBIUS · CLASS IV<br>
+                            TRAVERSAL: STABLE<br>
+                            LOOP Δt = <span id="mobius-dt">0.000000</span><br>
+                            STATUS: NOMINAL
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="hero-overlay">
                 <h1 class="glitch-target">AFFINITY AI</h1>
@@ -723,114 +792,299 @@
             return true;
         }
 
-        function createMobiusGeometry(THREE) {
-            const radius = 1;
-            const halfWidth = 0.32;
-            const segments = 240;
-            const strips = 40;
-            const vertexCount = (segments + 1) * (strips + 1);
-            const positions = new Float32Array(vertexCount * 3);
-            const indices = [];
-            let index = 0;
-
-            for (let i = 0; i <= segments; i += 1) {
-                const u = (i / segments) * Math.PI * 2;
-                const cosU = Math.cos(u);
-                const sinU = Math.sin(u);
-                const cosHalfU = Math.cos(u / 2);
-                const sinHalfU = Math.sin(u / 2);
-
-                for (let j = 0; j <= strips; j += 1) {
-                    const v = ((j / strips) - 0.5) * 2;
-                    const w = halfWidth * v;
-
-                    positions[index] = (radius + w * cosHalfU) * cosU;
-                    positions[index + 1] = (radius + w * cosHalfU) * sinU;
-                    positions[index + 2] = w * sinHalfU;
-                    index += 3;
-                }
-            }
-
-            for (let i = 0; i < segments; i += 1) {
-                for (let j = 0; j < strips; j += 1) {
-                    const a = (i * (strips + 1)) + j;
-                    const b = ((i + 1) * (strips + 1)) + j;
-                    const c = ((i + 1) * (strips + 1)) + (j + 1);
-                    const d = (i * (strips + 1)) + (j + 1);
-                    indices.push(a, b, d, b, c, d);
-                }
-            }
-
-            const geometry = new THREE.BufferGeometry();
-            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            geometry.setIndex(indices);
-            geometry.computeVertexNormals();
-            return geometry;
-        }
-
         function initMobius(canvas) {
             if (!canvas || !window.THREE) {
-                return { render: function noop() {}, updateScale: function noop() {} };
+                return { updateScale: function noop() {} };
             }
 
             const THREE = window.THREE;
+            const container = canvas.parentElement || document.body;
+            const renderer = new THREE.WebGLRenderer({
+                canvas: canvas,
+                antialias: true,
+                alpha: true,
+                powerPreference: 'high-performance'
+            });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 3));
+            renderer.setClearColor(0x0a0202, 1);
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.1;
+
             const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-            camera.position.z = 6;
-
-            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
-
-            const mobiusGeometry = createMobiusGeometry(THREE);
-            const mobiusMaterial = new THREE.MeshStandardMaterial({ color: '#1a0000', roughness: 0.9, metalness: 0.0 });
-            const mobius = new THREE.Mesh(mobiusGeometry, mobiusMaterial);
-            scene.add(mobius);
-
-            const cageGeometry = createMobiusGeometry(THREE);
-            const cageMaterial = new THREE.MeshBasicMaterial({ color: '#8b0000', wireframe: true, opacity: 0.2, transparent: true });
-            const cage = new THREE.Mesh(cageGeometry, cageMaterial);
-            cage.scale.setScalar(1.08);
-            scene.add(cage);
-
-            const lightA = new THREE.PointLight(0xff2200, 2.2, 9);
-            lightA.position.set(2.4, 3, 3.6);
-            scene.add(lightA);
-
-            const lightB = new THREE.PointLight(0x3b0a0a, 1.6, 6);
-            lightB.position.set(-3, -2, 3);
-            scene.add(lightB);
-
-            const ambient = new THREE.AmbientLight(0xffffff, 0.08);
-            scene.add(ambient);
+            const camera = new THREE.PerspectiveCamera(36, 1, 0.01, 100);
+            camera.position.set(0, 2.2, 6.8);
 
             function resize() {
-                const width = Math.max(canvas.clientWidth || window.innerWidth, 1);
-                const height = Math.max(canvas.clientHeight || window.innerHeight, 1);
-                const dpr = Math.min(window.devicePixelRatio || 1, 2);
-                renderer.setPixelRatio(dpr);
-                renderer.setSize(width, height, false);
-                camera.aspect = width / height;
+                const rect = container.getBoundingClientRect();
+                const w = Math.max(rect.width, 1);
+                const h = Math.max(rect.height, 1);
+                renderer.setSize(w, h, false);
+                camera.aspect = w / h;
                 camera.updateProjectionMatrix();
             }
-
             window.addEventListener('resize', resize);
             resize();
 
-            function render(time) {
-                const t = (time || 0) * 0.00012;
-                mobius.rotation.x = t * Math.PI * 2;
-                mobius.rotation.y = t * Math.PI * 1.4;
-                cage.rotation.x = -t * Math.PI * 1.1;
-                cage.rotation.y = t * Math.PI * 1.3;
-                renderer.render(scene, camera);
-                requestAnimationFrame(render);
+            // Möbius helpers
+            const R_MAJ = 1.9;
+            const R_WID = 0.50;
+            function mobiusPt(u, v) {
+                const cu = Math.cos(u), su = Math.sin(u);
+                const chu = Math.cos(u * 0.5), shu = Math.sin(u * 0.5);
+                return new THREE.Vector3(
+                    (R_MAJ + R_WID * v * chu) * cu,
+                    (R_MAJ + R_WID * v * chu) * su,
+                    R_WID * v * shu
+                );
             }
 
-            requestAnimationFrame(render);
+            const root = new THREE.Group();
+            root.rotation.x = 0.5;
+            root.rotation.z = 0.1;
+            scene.add(root);
+
+            // Ribbon shader
+            const ribbonMat = new THREE.ShaderMaterial({
+                transparent: true,
+                depthWrite: false,
+                side: THREE.DoubleSide,
+                blending: THREE.NormalBlending,
+                uniforms: {
+                    uTime: { value: 0 },
+                    uCamPos: { value: camera.position }
+                },
+                vertexShader: `
+                    varying vec3 vNormal;
+                    varying vec3 vWorldPos;
+                    varying vec2 vUV;
+
+                    void main() {
+                        vNormal   = normalize(normalMatrix * normal);
+                        vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
+                        vUV       = uv;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform float uTime;
+                    uniform vec3  uCamPos;
+                    varying vec3  vNormal;
+                    varying vec3  vWorldPos;
+                    varying vec2  vUV;
+
+                    void main() {
+                        vec3  V    = normalize(uCamPos - vWorldPos);
+                        vec3  N    = normalize(vNormal);
+                        float cosA = abs(dot(N, V));
+
+                        vec2 uv = vUV * vec2(160.0, 70.0);
+                        float s = 0.7071;
+                        vec2 uvDia = vec2(
+                            uv.x * s - uv.y * s,
+                            uv.x * s + uv.y * s
+                        );
+                        vec2  cell   = fract(uvDia);
+                        float lineX  = min(cell.x, 1.0 - cell.x);
+                        float lineY  = min(cell.y, 1.0 - cell.y);
+                        float minDist = min(lineX, lineY);
+                        float lineWidth = 0.06;
+                        float line = 1.0 - smoothstep(0.0, lineWidth, minDist);
+                        float sheen = pow(1.0 - cosA, 2.2);
+                        float edgeV = pow(abs(vUV.y * 2.0 - 1.0), 2.0);
+
+                        vec3 bgCol   = vec3(0.10, 0.015, 0.010);
+                        vec3 lineCol = mix(
+                            vec3(0.65, 0.08, 0.03),
+                            vec3(0.90, 0.22, 0.06),
+                            sheen * 0.8
+                        );
+                        lineCol = mix(lineCol, vec3(0.85, 0.15, 0.04), edgeV * 0.5);
+                        vec3 col = mix(bgCol, lineCol, line);
+                        float alpha = mix(0.82, 1.0, line);
+                        alpha = clamp(alpha + edgeV * 0.15, 0.0, 1.0);
+                        gl_FragColor = vec4(col, alpha);
+                    }
+                `
+            });
+
+            {
+                const NU = 600, NV = 60;
+                const pos = [], uvs = [], idx = [];
+
+                for (let i = 0; i <= NU; i++) {
+                    const u = (i / NU) * Math.PI * 2;
+                    for (let j = 0; j <= NV; j++) {
+                        const v = (j / NV) * 2 - 1;
+                        const p = mobiusPt(u, v);
+                        pos.push(p.x, p.y, p.z);
+                        uvs.push(i / NU, j / NV);
+                    }
+                }
+                for (let i = 0; i < NU; i++) {
+                    for (let j = 0; j < NV; j++) {
+                        const a = i * (NV + 1) + j, b = (i + 1) * (NV + 1) + j;
+                        idx.push(a, b, a + 1, b, b + 1, a + 1);
+                    }
+                }
+                const geo = new THREE.BufferGeometry();
+                geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+                geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+                geo.setIndex(idx);
+                geo.computeVertexNormals();
+                root.add(new THREE.Mesh(geo, ribbonMat));
+            }
+
+            function makeLine(vVal, color, opacity, segments = 1200) {
+                const pts = [];
+                for (let i = 0; i <= segments; i++) {
+                    pts.push(mobiusPt((i / segments) * Math.PI * 4, vVal));
+                }
+                const geo = new THREE.BufferGeometry().setFromPoints(pts);
+                const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity, linewidth: 1 });
+                return new THREE.Line(geo, mat);
+            }
+
+            root.add(makeLine(1.0, 0x8b0000, 1.0));
+            root.add(makeLine(-1.0, 0x8b0000, 1.0));
+            root.add(makeLine(1.0, 0xc6a75e, 0.35));
+            root.add(makeLine(-1.0, 0xc6a75e, 0.35));
+            root.add(makeLine(0.5, 0x5a0000, 0.3));
+            root.add(makeLine(-0.5, 0x5a0000, 0.3));
+            root.add(makeLine(0.0, 0xb8933a, 0.5));
+
+            {
+                const N_LONG = 16;
+                const mat = new THREE.LineBasicMaterial({ color: 0x3a0000, transparent: true, opacity: 0.35 });
+                for (let j = 0; j <= N_LONG; j++) {
+                    const v = (j / N_LONG) * 2 - 1;
+                    const pts = [];
+                    for (let i = 0; i <= 800; i++) {
+                        pts.push(mobiusPt((i / 800) * Math.PI * 4, v));
+                    }
+                    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+                    root.add(new THREE.Line(geo, mat));
+                }
+            }
+
+            function makeGlowSprite(r, g, b, size = 256) {
+                const c = document.createElement('canvas');
+                c.width = c.height = size;
+                const ctx = c.getContext('2d');
+                const cx = size / 2;
+                const grad = ctx.createRadialGradient(cx, cx, 0, cx, cx, cx);
+                grad.addColorStop(0, `rgba(255,255,255,1)`);
+                grad.addColorStop(0.04, `rgba(${r},${g},${b},1)`);
+                grad.addColorStop(0.12, `rgba(${r},${g},${b},0.6)`);
+                grad.addColorStop(0.25, `rgba(${r},${g},${b},0.15)`);
+                grad.addColorStop(1, `rgba(0,0,0,0)`);
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, size, size);
+                return new THREE.CanvasTexture(c);
+            }
+
+            const STREAMS = [
+                { v: 0.0, speed: 0.30, len: 380, size: 0.20, r: 255, g: 200, b: 120 },
+                { v: 0.5, speed: 0.22, len: 300, size: 0.14, r: 200, g: 60, b: 20 },
+                { v: -0.5, speed: 0.38, len: 260, size: 0.12, r: 198, g: 167, b: 94 },
+                { v: 0.85, speed: 0.18, len: 200, size: 0.10, r: 160, g: 30, b: 10 },
+                { v: -0.85, speed: 0.28, len: 220, size: 0.11, r: 220, g: 150, b: 60 },
+                { v: 0.25, speed: 0.44, len: 180, size: 0.08, r: 255, g: 220, b: 180 }
+            ];
+
+            const streamObjs = STREAMS.map(function (s, si) {
+                const TLEN = s.len;
+                const pos = new Float32Array(TLEN * 3);
+                const col = new Float32Array(TLEN * 3);
+                const geo = new THREE.BufferGeometry();
+                geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+                geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+                const mat = new THREE.PointsMaterial({
+                    size: s.size,
+                    vertexColors: true,
+                    map: makeGlowSprite(s.r, s.g, s.b),
+                    transparent: true,
+                    opacity: 1,
+                    depthWrite: false,
+                    blending: THREE.AdditiveBlending,
+                    sizeAttenuation: true
+                });
+                const pts = new THREE.Points(geo, mat);
+                root.add(pts);
+                const history = Array.from({ length: TLEN }, function () { return new THREE.Vector3(); });
+                return { ...s, geo, pos, col, mat, pts, history, head: 0, phase: si / STREAMS.length };
+            });
+
+            {
+                const haloTex = makeGlowSprite(120, 20, 10, 512);
+                const haloMat = new THREE.SpriteMaterial({
+                    map: haloTex,
+                    transparent: true,
+                    opacity: 0.12,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
+                });
+                const halo = new THREE.Sprite(haloMat);
+                halo.scale.set(9, 9, 1);
+                scene.add(halo);
+            }
+
+            let t0 = null;
+            let prevTs = null;
+            const dtEl = document.getElementById('mobius-dt');
+
+            function animate(ts) {
+                requestAnimationFrame(animate);
+                if (!t0) t0 = ts;
+                if (!prevTs) prevTs = ts;
+                const t = (ts - t0) * 0.001;
+                const delta = Math.min(ts - prevTs, 50) * 0.001;
+                prevTs = ts;
+
+                ribbonMat.uniforms.uTime.value = t;
+                ribbonMat.uniforms.uCamPos.value.copy(camera.position);
+
+                root.rotation.x += 0.35 * delta;
+                root.rotation.y += 0.08 * delta;
+
+                camera.position.set(0, 2.2, 6.8);
+                camera.lookAt(0, 0, 0);
+
+                streamObjs.forEach(function (s, si) {
+                    s.phase = (s.phase + s.speed * 0.016) % 1;
+                    const u = s.phase * Math.PI * 4;
+                    const pt = mobiusPt(u, s.v);
+
+                    s.history[s.head].copy(pt);
+                    s.head = (s.head + 1) % s.history.length;
+
+                    const TLEN = s.history.length;
+                    for (let i = 0; i < TLEN; i++) {
+                        const age = ((s.head - i - 1 + TLEN) % TLEN) / TLEN;
+                        const fade = Math.pow(1.0 - age, 4.5);
+                        const h = s.history[(s.head - i - 1 + TLEN) % TLEN];
+                        s.pos[i * 3] = h.x; s.pos[i * 3 + 1] = h.y; s.pos[i * 3 + 2] = h.z;
+                        s.col[i * 3] = (s.r / 255) * fade;
+                        s.col[i * 3 + 1] = (s.g / 255) * fade;
+                        s.col[i * 3 + 2] = (s.b / 255) * fade;
+                    }
+                    s.geo.attributes.position.needsUpdate = true;
+                    s.geo.attributes.color.needsUpdate = true;
+                    s.mat.size = s.size * (0.88 + Math.sin(t * 4.5 + si) * 0.12);
+                });
+
+                if (dtEl) {
+                    const dt = (Math.sin(t * 0.9) * 0.5 + 0.5) * 0.000004;
+                    dtEl.textContent = dt.toFixed(6);
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            requestAnimationFrame(animate);
 
             function updateScale(progress) {
                 const eased = clamp(progress, 0, 1);
-                const targetZ = 6 - (3 * eased);
-                camera.position.z = targetZ;
+                camera.position.z = 6.8 - (2.4 * eased);
             }
 
             return { updateScale: updateScale };
@@ -913,7 +1167,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const body = document.body;
             const hero = document.getElementById('hero');
-            const canvas = document.getElementById('ai-loop-canvas');
+            const canvas = document.getElementById('mobius-canvas');
             const heroTitle = document.querySelector('.glitch-target');
 
             if (body) {
