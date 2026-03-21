@@ -111,6 +111,8 @@ body.page-exit {
     font-size: clamp(0.8rem, 1.1vw, 0.95rem);
     letter-spacing: 0.06em;
 }
+.nav-links a[href*="ai"]:hover { color: #8b0000 !important; }
+.nav-links a[href*="photos"]:hover { color: #1055cc !important; }
 
 .scroll-shell {
     height: 600vh;

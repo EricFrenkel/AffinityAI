@@ -43,6 +43,8 @@
         .nav-links { display: flex; align-items: center; gap: 1.25rem; }
         .nav-links a { font-family: "DM Mono", monospace; font-size: 0.75rem; letter-spacing: 0.15em; color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s; }
         .nav-links a:hover { color: var(--cream); }
+        .nav-links a[href*="ai"]:hover { color: #8b0000; }
+        .nav-links a[href*="photos"]:hover { color: #1055cc; }
         .nav-links span { color: rgba(255,255,255,0.25); font-size: 0.7rem; }
 
         /*
@@ -125,17 +127,22 @@
         .section { padding: 7rem 6vw; }
 
         /* Build */
-        .build-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; max-width: 1200px; margin: 0 auto; align-items: start; }
-        .build-number { font-family: "Syne", sans-serif; font-size: 5rem; font-weight: 800; color: rgba(255,255,255,0.05); line-height: 1; margin-bottom: 0.5rem; }
-        .build-left h2 { font-family: "Syne", sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem); color: var(--cream); line-height: 1.15; }
-        .build-right { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .build-cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 1400px; margin: 0 auto; }
+        .build-number { font-family: "Syne", sans-serif; font-size: 6rem; font-weight: 800; color: rgba(255,255,255,0.05); line-height: 1; margin-top: 0.5rem; }
+        .divisions-heading { text-align: center; padding-bottom: 3rem; }
+        .divisions-heading h2 { font-family: "Syne", sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem); color: var(--cream); line-height: 1.15; margin-bottom: 0.5rem; }
+        .glow-02 { color: rgba(255,255,255,0.05); -webkit-text-stroke: 1px rgba(160,20,20,0.5); animation: glowTrace 3s ease-in-out infinite; }
+        @keyframes glowTrace {
+            0%, 100% { filter: drop-shadow(0 0 6px rgba(139,0,0,0.3)) drop-shadow(0 0 14px rgba(139,0,0,0.15)); -webkit-text-stroke: 1px rgba(150,20,20,0.4); }
+            50% { filter: drop-shadow(0 0 16px rgba(180,20,20,0.65)) drop-shadow(0 0 36px rgba(139,0,0,0.35)); -webkit-text-stroke: 1px rgba(200,40,40,0.75); }
+        }
         .build-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1.5rem; border-radius: 4px; transition: background 0.25s; }
         .build-card:hover { background: rgba(255,255,255,0.055); }
         .build-card h3 { font-family: "Syne", sans-serif; font-size: 1rem; color: var(--cream); margin-bottom: 0.6rem; }
         .build-card p { font-size: 0.88rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
 
         /* Divisions */
-        .section-divisions { display: flex; flex-direction: column; gap: 5rem; max-width: 1200px; margin: 0 auto; padding: 7rem 6vw; }
+        .section-divisions { display: flex; flex-direction: column; gap: 5rem; max-width: 1200px; margin: 0 auto; padding: 5rem 6vw 7rem; }
         .division-row { display: flex; align-items: center; gap: 5rem; }
         .division-row.reverse { flex-direction: row-reverse; }
         .division-content { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 2.5rem; border-radius: 12px; }
@@ -230,8 +237,7 @@
         .reveal.visible { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 768px) {
-            .build-layout { grid-template-columns: 1fr; gap: 2rem; }
-            .build-right { grid-template-columns: 1fr; }
+            .build-cards-row { grid-template-columns: 1fr 1fr; gap: 1rem; }
             .division-row, .division-row.reverse { flex-direction: column; gap: 2rem; }
             .division-visual { flex: none; width: 100%; height: 260px; }
             .stats-grid { grid-template-columns: 1fr; }
@@ -327,33 +333,31 @@
 
         <div class="page-content">
             <section class="section section-build" id="what-we-build" aria-label="Affinity services and capabilities">
-                <div class="build-layout">
-                    <div class="build-left">
-                        <p class="build-number">02</p>
-                        <h2>Two Divisions.<br>One Mission.</h2>
-                    </div>
-                    <div class="build-right">
-                        <article class="build-card reveal">
-                            <h3>AI Landscape Updates</h3>
-                            <p>We monitor and deploy the latest AI automation tools the moment they matter — keeping your business efficient and ahead while competitors scramble to catch up.</p>
-                        </article>
-                        <article class="build-card reveal">
-                            <h3>Compete at Any Scale</h3>
-                            <p>Give small and mid-size businesses a competitive advantage with scalable AI systems that punch far above their weight class against well-funded industry giants.</p>
-                        </article>
-                        <article class="build-card reveal">
-                            <h3>Data-Driven Marketing</h3>
-                            <p>Affinity Star uses real-time promotional trend data and AI-powered marketing insights to maximize brand visibility and reach your audience exactly where it matters most.</p>
-                        </article>
-                        <article class="build-card reveal">
-                            <h3>Front-End Relevance</h3>
-                            <p>From social media management and content marketing to live events and professional photography, Affinity Star keeps your brand identity sharp, consistent, and top of mind.</p>
-                        </article>
-                    </div>
+                <div class="build-cards-row">
+                    <article class="build-card reveal">
+                        <h3>AI Landscape Updates</h3>
+                        <p>We monitor and deploy the latest AI automation tools the moment they matter — keeping your business efficient and ahead while competitors scramble to catch up.</p>
+                    </article>
+                    <article class="build-card reveal">
+                        <h3>Compete at Any Scale</h3>
+                        <p>Give small and mid-size businesses a competitive advantage with scalable AI systems that punch far above their weight class against well-funded industry giants.</p>
+                    </article>
+                    <article class="build-card reveal">
+                        <h3>Data-Driven Marketing</h3>
+                        <p>Affinity Star uses real-time promotional trend data and AI-powered marketing insights to maximize brand visibility and reach your audience exactly where it matters most.</p>
+                    </article>
+                    <article class="build-card reveal">
+                        <h3>Front-End Relevance</h3>
+                        <p>From social media management and content marketing to live events and professional photography, Affinity Star keeps your brand identity sharp, consistent, and top of mind.</p>
+                    </article>
                 </div>
             </section>
 
             <section class="section-divisions" id="divisions">
+                <div class="divisions-heading reveal">
+                    <h2>Two Divisions. One Mission.</h2>
+                    <p class="build-number glow-02">02</p>
+                </div>
                 <!-- Division 01 — Affinity AI with Möbius strip -->
                 <div class="division-row reveal" id="division-ai">
                     <div class="division-visual" aria-label="Affinity AI Möbius visualization">
