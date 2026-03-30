@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Affinity | AI Automation, Data-Driven Marketing & Business Growth</title>
-    <meta name="description" content="Affinity helps businesses grow with cutting-edge AI tools, intelligent automation, and data-driven marketing strategies. Stay ahead with Affinity AI and Affinity Star.">
-    <meta name="keywords" content="AI automation, business growth, data-driven marketing, AI tools, brand visibility, marketing strategy, small business AI, Affinity AI, Affinity Star">
+    <meta name="description" content="Affinity helps businesses grow with cutting-edge AI tools, intelligent automation, and on-premise AI systems. Stay ahead with Affinity AI and Affinity Gaia.">
+    <meta name="keywords" content="AI automation, business growth, on-premise AI, AI tools, local AI model, RAG libraries, small business AI, Affinity AI, Affinity Gaia">
     <meta property="og:title" content="Affinity | AI Automation, Data-Driven Marketing & Business Growth">
     <meta property="og:description" content="Affinity helps businesses grow with cutting-edge AI tools, intelligent automation, and data-driven marketing strategies.">
     <meta property="og:type" content="website">
@@ -49,12 +49,12 @@
 
         /*
          * HERO SHELL — height must equal WORDMARK_VH + (PANEL_COUNT × PANEL_VH)
-         * JS constants:  WORDMARK_VH=60  PANEL_VH=60  PANEL_COUNT=5
-         * Total:         60 + 300 = 360vh
+         * JS constants:  WORDMARK_VH=60  PANEL_VH=60  PANEL_COUNT=3
+         * Total:         100 + 60 + 180 = 340vh
          */
         .scroll-shell {
             position: relative;
-            height: 360vh;
+            height: 340vh;
             background: var(--hero-gradient);
         }
         .scroll-shell-sticky {
@@ -79,9 +79,10 @@
         #loop-canvas { width: 100%; height: 100%; display: block; opacity: 0.75; }
 
         /* Wordmark */
-        .hero-wordmark { position: absolute; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; }
+        .hero-wordmark { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; gap: 0.75rem; }
         .hero-wordmark.hidden { opacity: 0; transform: scale(0.93) translateY(-14px); pointer-events: none; }
         .hero-wordmark-text { font-family: "Syne", sans-serif; font-weight: 800; font-size: clamp(2.8rem, 8vw, 6.5rem); letter-spacing: 0.2em; color: var(--cream); text-transform: uppercase; text-shadow: 0 0 80px rgba(253,241,224,0.15); animation: wordmarkIn 1s cubic-bezier(0.4,0,0.2,1) both; }
+        .hero-wordmark-sub { font-family: "DM Mono", monospace; font-size: clamp(0.7rem, 1.4vw, 1rem); letter-spacing: 0.22em; color: rgba(253,241,224,0.5); text-transform: uppercase; animation: wordmarkIn 1s 0.25s cubic-bezier(0.4,0,0.2,1) both; }
         @keyframes wordmarkIn {
             from { opacity: 0; transform: scale(0.94) translateY(16px); letter-spacing: 0.35em; }
             to   { opacity: 1; transform: scale(1) translateY(0); letter-spacing: 0.2em; }
@@ -257,7 +258,7 @@
         <div class="nav-links">
             <a href="pages/ai.html">AI</a>
             <span aria-hidden="true">·</span>
-            <a href="pages/photos.html">STAR</a>
+            <a href="pages/gaia.html">GAIA</a>
         </div>
     </nav>
 
@@ -276,53 +277,31 @@
 
                 <div class="hero-wordmark" id="hero-wordmark" aria-hidden="true">
                     <span class="hero-wordmark-text">AFFINITY</span>
+                    <span class="hero-wordmark-sub">A new standard for AI security.</span>
                 </div>
 
                 <div class="panel-layer" id="panel-layer">
                     <article class="panel" data-panel-index="0">
                         <div class="hero-main-content">
-                            <p class="panel-label">Affinity</p>
-                            <h2>Your Edge in an AI-Driven World</h2>
+                            <p class="panel-label">01</p>
+                            <h2>An Artificial Intelligence Model that never touches the internet.</h2>
                             <hr class="panel-rule">
-                            <p>Affinity exists to close the gap between businesses and their growth — using intelligence to expose what's broken, and presence to build what lasts.</p>
-                            <div class="hero-badges">
-                                <span>AI TOOLS</span>
-                                <span>AUTOMATION</span>
-                                <span>GROWTH</span>
-                            </div>
-                            <div class="hero-actions">
-                                <a class="cta-button" href="pages/ai.html">Explore Affinity AI →</a>
-                                <a class="cta-button ghost" href="pages/photos.html">See Affinity Star</a>
-                            </div>
+                            <p>Affinity Gaia is hosted entirely on-premises — your hardware, your network, your walls. With no external internet connection, your data never leaves the building. Every query, every response, every document stays fully contained within your infrastructure, giving you enterprise-grade AI power with complete security and zero exposure.</p>
                         </div>
                     </article>
 
                     <article class="panel" data-panel-index="1">
-                        <p class="panel-label">Affinity AI</p>
-                        <h2>Always Current. Always Competitive.</h2>
+                        <p class="panel-label">02</p>
+                        <h2>The Natural Habitat for Massive RAG Libraries</h2>
                         <hr class="panel-rule">
-                        <p>The AI landscape shifts weekly. We track it, implement it, and deploy it — so your business operates on the cutting edge while your competitors are still catching up.</p>
+                        <p>Imagine a building-wide personal assistant with deep, instant knowledge of every client, every file, every case. Affinity Gaia is purpose-built to ingest and reason over enormous retrieval-augmented generation libraries — turning your organization's entire knowledge base into a single, queryable intelligence that works for everyone, all at once.</p>
                     </article>
 
                     <article class="panel" data-panel-index="2">
-                        <p class="panel-label">Affinity Star</p>
-                        <h2>A Brand That Stays Relevant</h2>
+                        <p class="panel-label">03</p>
+                        <h2>Customized consulting for all your AI needs</h2>
                         <hr class="panel-rule">
-                        <p>Affinity Star keeps your brand front-and-center — powered by real promotional trend data flowing from Affinity AI's backend, so every campaign is informed by what's actually working right now.</p>
-                    </article>
-
-                    <article class="panel" data-panel-index="3">
-                        <p class="panel-label">Impact</p>
-                        <h2>Automation Coverage Target</h2>
-                        <hr class="panel-rule">
-                        <p>We target high process automation coverage fast — cutting operational overhead so your team focuses on growth, not maintenance.</p>
-                    </article>
-
-                    <article class="panel" data-panel-index="4">
-                        <p class="panel-label">The Team</p>
-                        <h2>Six Builders. One Vision.</h2>
-                        <hr class="panel-rule">
-                        <p>Affinity is built by a founding team combining AI engineering, creative direction, sound production, and brand strategy — all working toward one goal: giving your business the edge it deserves.</p>
+                        <p>Already running a Gaia system? We keep it healthy — tuning models, expanding your RAG libraries, and evolving it as your organization grows. No Gaia? No problem. Affinity AI builds custom AI tools tailored to your workflows, whether that means integrating Gaia, leveraging cloud AI services, or combining both. Whatever the stack, we engineer solutions that actually fit your business.</p>
                     </article>
                 </div>
 
@@ -343,12 +322,12 @@
                         <p>Give small and mid-size businesses a competitive advantage with scalable AI systems that punch far above their weight class against well-funded industry giants.</p>
                     </article>
                     <article class="build-card reveal">
-                        <h3>Data-Driven Marketing</h3>
-                        <p>Affinity Star uses real-time promotional trend data and AI-powered marketing insights to maximize brand visibility and reach your audience exactly where it matters most.</p>
+                        <h3>Air-Gapped AI Deployment</h3>
+                        <p>Affinity Gaia runs entirely on your own hardware with zero internet exposure — enterprise-grade intelligence with complete data sovereignty and no external dependencies.</p>
                     </article>
                     <article class="build-card reveal">
-                        <h3>Front-End Relevance</h3>
-                        <p>From social media management and content marketing to live events and professional photography, Affinity Star keeps your brand identity sharp, consistent, and top of mind.</p>
+                        <h3>Massive RAG Libraries</h3>
+                        <p>Turn your organization's entire knowledge base into a single queryable intelligence. Gaia ingests every document, client file, and case history — making it instantly searchable for your whole team.</p>
                     </article>
                 </div>
             </section>
@@ -371,15 +350,15 @@
                     </div>
                 </div>
 
-                <!-- Division 02 — Affinity Star -->
+                <!-- Division 02 — Affinity Gaia -->
                 <div class="division-row reverse reveal">
                     <div class="division-content">
                         <p class="division-label">// division 02</p>
-                        <h3>Affinity Star</h3>
-                        <p>Affinity Star keeps your brand relevant on the front end — inspired by real promotional trend data tracked by Affinity AI's backend, so every campaign stays ahead of the curve and in front of the right audience.</p>
-                        <a class="cta-button" href="pages/photos.html">Explore Star →</a>
+                        <h3>Affinity Gaia</h3>
+                        <p>Affinity Gaia is an on-premise AI model that never touches the internet — purpose-built for organizations that need enterprise-grade intelligence with absolute data sovereignty and no cloud exposure.</p>
+                        <a class="cta-button" href="pages/gaia.html">Explore Gaia →</a>
                     </div>
-                    <div class="division-visual" aria-label="Affinity Star visualization" style="position:relative;overflow:hidden;">
+                    <div class="division-visual" aria-label="Affinity Gaia visualization" style="position:relative;overflow:hidden;">
                         <canvas id="mini-star-canvas"></canvas>
                     </div>
                 </div>
@@ -449,8 +428,8 @@
                             <p>Latest AI Tool Deployment<br>Automation Pipelines<br>AI Agents &amp; RAG Systems<br>Continuous Optimization</p>
                         </div>
                         <div>
-                            <h3>AFFINITY STAR</h3>
-                            <p>Social Media Management<br>Live Sound Engineering<br>Pro Photography<br>Trend-Informed Campaigns</p>
+                            <h3>AFFINITY GAIA</h3>
+                            <p>On-Premise AI Deployment<br>Massive RAG Libraries<br>Air-Gapped Infrastructure<br>Continuous Model Tuning</p>
                         </div>
                     </div>
                     <div class="bottom-strip">© 2025 AFFINITY · ALL RIGHTS RESERVED</div>
@@ -466,7 +445,7 @@
     // ─────────────────────────────────────────────────────────────────
     const WORDMARK_VH  = 60;
     const PANEL_VH     = 60;
-    const PANEL_COUNT  = 5;
+    const PANEL_COUNT  = 3;
 
     const PANELS     = [...document.querySelectorAll('.panel')];
     const wordmark   = document.getElementById('hero-wordmark');
@@ -861,7 +840,7 @@
     </script>
 
     <script>
-    // ── Mini Star — Division Star card ────────────────────────────────────
+    // ── Mini Gaia — Division Gaia card ────────────────────────────────────
     (function () {
         const canvas = document.getElementById('mini-star-canvas');
         if (!canvas || typeof THREE === 'undefined') return;
@@ -877,11 +856,11 @@
         rdr.setSize(W, H);
         rdr.setPixelRatio(Math.min(devicePixelRatio, 2));
         rdr.toneMapping = THREE.ACESFilmicToneMapping;
-        rdr.toneMappingExposure = 1.15;
+        rdr.toneMappingExposure = 1.1;
 
         const sc = new THREE.Scene();
         const cam = new THREE.PerspectiveCamera(38, W / H, 0.1, 200);
-        cam.position.set(0, 0, 3.0);
+        cam.position.set(0, 0, 3.2);
         cam.lookAt(0, 0, 0);
 
         // Environment
@@ -891,38 +870,39 @@
             const x = c.getContext('2d');
             x.fillStyle = '#05070E'; x.fillRect(0, 0, c.width, c.height);
             const s1 = x.createRadialGradient(sz * 1.4, sz * .45, 0, sz * 1.4, sz * .45, sz * .9);
-            s1.addColorStop(0, 'rgba(140,200,255,1)'); s1.addColorStop(.4, 'rgba(50,110,220,.28)'); s1.addColorStop(1, 'rgba(0,0,0,0)');
+            s1.addColorStop(0, 'rgba(25,216,255,0.9)'); s1.addColorStop(.4, 'rgba(20,100,230,.28)'); s1.addColorStop(1, 'rgba(0,0,0,0)');
             x.fillStyle = s1; x.fillRect(0, 0, c.width, c.height);
             const t = new THREE.CanvasTexture(c);
             t.mapping = THREE.EquirectangularReflectionMapping;
             sc.environment = t;
         })();
 
-        // Star geometry
-        const sh = new THREE.Shape(), oR = 1.32, iR = 0.52, pts = 5, step = (Math.PI * 2) / pts;
-        for (let i = 0; i < pts; i++) {
-            const oa = i * step - Math.PI / 2, ia = oa + step / 2;
-            sh[i === 0 ? 'moveTo' : 'lineTo'](Math.cos(oa) * oR, Math.sin(oa) * oR);
-            sh.lineTo(Math.cos(ia) * iR, Math.sin(ia) * iR);
-        }
-        sh.closePath();
-        const geo = new THREE.ExtrudeGeometry(sh, { depth: 0.48, bevelEnabled: true, bevelThickness: 0.19, bevelSize: 0.19 * 0.6, bevelSegments: 12 });
-        geo.center(); geo.computeVertexNormals();
-
-        const mat = new THREE.MeshPhysicalMaterial({
-            color: 0x1055CC, emissive: 0x030E28, emissiveIntensity: 0.35,
-            metalness: 0.92, roughness: 0.05, clearcoat: 1, clearcoatRoughness: 0.02,
-            reflectivity: 1, envMapIntensity: 2
+        // Gaia sphere
+        const coreMat = new THREE.MeshPhysicalMaterial({
+            color: 0x041230, emissive: 0x082060, emissiveIntensity: 0.55,
+            metalness: 0.4, roughness: 0.35, clearcoat: 0.9, clearcoatRoughness: 0.08,
+            reflectivity: 1, envMapIntensity: 2.5
         });
-        const star = new THREE.Mesh(geo, mat);
-        sc.add(star);
+        const core = new THREE.Mesh(new THREE.SphereGeometry(0.85, 48, 48), coreMat);
+        sc.add(core);
+
+        // Wireframe overlay
+        sc.add(new THREE.Mesh(new THREE.IcosahedronGeometry(0.89, 3),
+            new THREE.MeshBasicMaterial({ color: 0x19D8FF, wireframe: true, transparent: true, opacity: 0.10 })));
+
+        // Orbital rings
+        function mkRing(inner, outer, rx, rz, op) {
+            const r = new THREE.Mesh(new THREE.RingGeometry(inner, outer, 64),
+                new THREE.MeshBasicMaterial({ color: 0x19D8FF, side: THREE.DoubleSide, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false }));
+            r.rotation.x = rx; r.rotation.z = rz; sc.add(r); return r;
+        }
+        const ring1 = mkRing(1.1, 1.12, Math.PI / 2, 0, 0.4);
+        const ring2 = mkRing(1.35, 1.37, Math.PI / 3, 0.4, 0.25);
 
         // Lights
-        sc.add(new THREE.AmbientLight(0x020610, 8));
-        const kL = new THREE.PointLight(0x99C8FF, 20, 20); kL.position.set(-3.5, 4.5, 4.5); sc.add(kL);
-        sc.add(new THREE.PointLight(0x0230AA, 6, 16)).position.set(5, -2, 2);
+        sc.add(new THREE.AmbientLight(0x020610, 6));
+        const kL = new THREE.PointLight(0x19D8FF, 18, 20); kL.position.set(-3.5, 4.5, 4.5); sc.add(kL);
         sc.add(new THREE.PointLight(0x00C0FF, 9, 14)).position.set(0.5, -1, -5);
-        const cL = new THREE.PointLight(0x2255FF, 0, 8); sc.add(cL);
 
         window.addEventListener('resize', function () {
             W = container.offsetWidth; H = container.offsetHeight;
@@ -934,9 +914,10 @@
         (function loop() {
             requestAnimationFrame(loop);
             const dt = clock.getDelta();
-            ry += dt * 0.5;
-            star.rotation.y = ry;
-            star.rotation.x = 0.2;
+            ry += dt * 0.45;
+            core.rotation.y = ry;
+            ring1.rotation.y = ry * 0.25;
+            ring2.rotation.y = -ry * 0.18;
             rdr.render(sc, cam);
         })();
     })();
