@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affinity Gaia · On-Premise AI Intelligence</title>
+<meta name="description" content="Affinity Gaia is a locally hosted AI model that never touches the internet — enterprise-grade intelligence, complete data sovereignty.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#08090E;
+  --white:#F0EFE8;
+  --muted:rgba(240,239,232,0.44);
+  --faint:rgba(240,239,232,0.12);
+  --line:rgba(240,239,232,0.08);
+  --blue:#19D8FF;
+  --gap:3px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--white);font-family:"Inter",sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ─── NAV ──────────────────────────────────── */
+.site-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2.5rem;background:linear-gradient(180deg,rgba(5,2,3,0.85) 0%,transparent 100%);backdrop-filter:blur(4px);opacity:0}
+.brand{font-family:"Syne",sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:0.2em;color:#fdf1e0;text-decoration:none}
+.nav-links{display:flex;align-items:center;gap:1.25rem}
+.nav-links a{font-family:"DM Mono",monospace;font-size:0.75rem;letter-spacing:0.15em;color:rgba(255,255,255,0.7);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:#fdf1e0}
+.nav-links span{color:rgba(255,255,255,0.25);font-size:0.7rem}
+
+/* ─── §1 HERO ─────────────────────────────── */
+.hero{position:relative;width:100%;height:200vh}
+.hero-inner{position:sticky;top:0;height:100vh;min-height:600px;overflow:hidden;display:flex;align-items:center}
+#hero-canvas{position:absolute;inset:0;z-index:0;width:100%!important;height:100%!important}
+.hero-vignette{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(to bottom,rgba(8,9,14,.6) 0%,transparent 10%),
+    linear-gradient(to right,rgba(8,9,14,.97) 0%,rgba(8,9,14,.75) 38%,rgba(8,9,14,.15) 58%,transparent 70%)
+}
+.hero-text{
+  position:relative;z-index:2;
+  width:48%;
+  padding:0 2rem 0 5rem;
+  display:flex;flex-direction:column;gap:14px;
+  text-align:left;
+}
+.hero-services{display:flex;flex-direction:column;gap:0;margin-top:0.5rem}
+.hero-service{
+  padding:1rem 0;border-top:1px solid rgba(255,255,255,0.08);
+  opacity:0;transform:translateY(12px);
+  transition:opacity 0.6s ease,transform 0.6s ease,border-color 0.3s ease;
+  text-decoration:none;color:inherit;display:block;cursor:default;
+}
+.hero-service.visible{opacity:1;transform:translateY(0)}
+.hero-service:last-child{border-bottom:1px solid rgba(255,255,255,0.08)}
+.hero-service h3{font-family:"Syne",sans-serif;font-size:0.95rem;font-weight:700;color:#fdf1e0;margin-bottom:0.25rem;letter-spacing:0.04em}
+.hero-service p{font-size:0.8rem;line-height:1.6;color:rgba(255,255,255,0.45)}
+.h-eye{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);opacity:0}
+.h-h1{font-family:"Syne",sans-serif;font-weight:300;font-size:clamp(40px,6vw,82px);line-height:1;letter-spacing:-.02em;opacity:0}
+.h-body{font-size:13px;line-height:1.7;color:var(--muted);max-width:340px;opacity:0}
+
+/* ─── §2 PRODUCT PANEL ─────────────────────── */
+.product{
+  display:block;border-top:1px solid var(--line);
+  padding:44px 60px 40px;
+  display:flex;flex-direction:column;gap:11px;
+  text-decoration:none;color:inherit;
+}
+.p-badge{font-size:9px;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:8px}
+.p-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--blue);box-shadow:0 0 7px var(--blue);flex-shrink:0}
+.p-title{font-family:"Syne",sans-serif;font-weight:400;font-size:clamp(30px,4vw,52px);letter-spacing:-.01em;line-height:1}
+.p-tag{font-family:"Syne",sans-serif;font-style:italic;font-size:16px;color:var(--muted);max-width:460px}
+
+/* ─── §3 AIRGAP ──────────────────────────────
+   Full-viewport dark section — no photo needed.
+────────────────────────────────────────────── */
+.airgap{
+  position:relative;height:100vh;min-height:500px;overflow:hidden;
+  display:flex;align-items:flex-end;
+  border-top:1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 20% 40%,rgba(15,55,180,0.22) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 70%,rgba(25,216,255,0.06) 0%,transparent 45%),
+    #05060F;
+}
+.airgap-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(25,216,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(25,216,255,0.04) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse at center,rgba(0,0,0,0.5) 0%,transparent 70%);
+}
+.airgap-over{
+  position:relative;z-index:1;
+  width:100%;padding:0 60px 60px;
+  background:linear-gradient(to top,rgba(8,9,14,.98) 0%,rgba(8,9,14,.35) 45%,transparent 100%)
+}
+.airgap-h{font-family:"Syne",sans-serif;font-weight:300;font-size:clamp(36px,5.5vw,78px);line-height:1.02;letter-spacing:-.025em}
+.airgap-h em{font-style:italic;color:rgba(240,239,232,.45)}
+.airgap-sub{font-size:14px;line-height:1.7;color:var(--muted);max-width:520px;margin-top:1.2rem}
+
+/* ─── §4 RAG ─────────────────────────────────
+   Two equal columns: text + visual
+────────────────────────────────────────────── */
+.rag{border-top:1px solid var(--line)}
+.rag-cols{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
+.rag-text{padding:56px 60px;display:flex;flex-direction:column;justify-content:center;gap:20px}
+.rag-label{font-size:9px;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--blue)}
+.rag-h{font-family:"Syne",sans-serif;font-weight:300;font-size:clamp(26px,3.8vw,52px);line-height:1.05;letter-spacing:-.02em}
+.rag-body{font-size:13px;line-height:1.72;color:var(--muted);max-width:340px}
+.rag-visual{
+  position:relative;overflow:hidden;min-height:400px;
+  background:
+    radial-gradient(ellipse at 60% 40%,rgba(25,216,255,0.12) 0%,transparent 55%),
+    radial-gradient(ellipse at 20% 80%,rgba(10,40,180,0.18) 0%,transparent 50%),
+    #06080F;
+}
+.rag-nodes{position:absolute;inset:0}
+.rag-node{
+  position:absolute;width:6px;height:6px;border-radius:50%;
+  background:var(--blue);box-shadow:0 0 12px var(--blue);
+  opacity:0.7;
+}
+.rag-line{position:absolute;height:1px;background:linear-gradient(90deg,transparent,rgba(25,216,255,0.3),transparent);transform-origin:left center}
+
+/* ─── §5 SECURITY STRIP ─────────────────────── */
+.sec-strip{
+  border-top:1px solid var(--line);
+  padding:80px 60px;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+  background:
+    radial-gradient(ellipse at 80% 50%,rgba(25,216,255,0.05) 0%,transparent 60%),
+    #07090F;
+}
+.sec-label{font-size:9px;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--blue);margin-bottom:1rem}
+.sec-h{font-family:"Syne",sans-serif;font-weight:300;font-size:clamp(26px,3.5vw,48px);line-height:1.05;letter-spacing:-.02em}
+.sec-body{font-size:13px;line-height:1.72;color:var(--muted)}
+.sec-stats{display:flex;flex-direction:column;gap:32px}
+.sec-stat{border-left:1px solid rgba(25,216,255,0.25);padding-left:24px}
+.sec-stat-num{font-family:"Syne",sans-serif;font-size:clamp(32px,4vw,52px);font-weight:800;color:var(--blue);line-height:1}
+.sec-stat-lbl{font-size:11px;letter-spacing:.12em;color:var(--muted);margin-top:4px;text-transform:uppercase}
+
+/* ─── §6 GAIA GLOBE ──────────────────────────
+   Full-viewport globe showcase.
+────────────────────────────────────────────── */
+.gaia-sect{
+  position:relative;height:100vh;min-height:560px;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;
+  border-top:1px solid var(--line);
+}
+#gaia-canvas{position:absolute;inset:0;z-index:0;width:100%!important;height:100%!important}
+.gaia-vignette{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(to bottom,rgba(8,9,14,.5) 0%,transparent 12%),
+    linear-gradient(to top,rgba(8,9,14,1) 0%,rgba(8,9,14,.6) 18%,transparent 42%)
+}
+.gaia-text{
+  position:relative;z-index:2;
+  flex:0 0 auto;width:100%;
+  padding:0 0 52px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  text-align:center;
+}
+.g-label{font-size:9px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--blue);opacity:0}
+.g-h{font-family:"Syne",sans-serif;font-weight:300;font-size:clamp(46px,7vw,100px);line-height:.95;letter-spacing:-.025em;opacity:0}
+.g-tag{font-family:"Syne",sans-serif;font-style:italic;font-size:17px;color:var(--muted);opacity:0}
+
+/* ─── §7 MARQUEE ─────────────────────────── */
+.mq{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0;overflow:hidden;white-space:nowrap}
+.mq-t{display:inline-flex;gap:44px;animation:mq 22s linear infinite}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mq-i{font-family:"Syne",sans-serif;font-size:18px;font-style:italic;color:var(--faint)}
+.mq-s{color:var(--blue);opacity:.3}
+
+/* ─── §7 PROCESS ─────────────────────────── */
+.process{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.ps{padding:44px 40px;border-right:1px solid var(--line)}
+.ps:last-child{border-right:none}
+.ps-n{font-family:"Syne",sans-serif;font-size:11px;letter-spacing:.2em;color:var(--blue);margin-bottom:16px}
+.ps-t{font-family:"Syne",sans-serif;font-weight:400;font-size:25px;letter-spacing:-.01em;margin-bottom:12px}
+.ps-b{font-size:13px;line-height:1.72;color:var(--muted)}
+
+/* ─── §8 CONTACT ─────────────────────────── */
+.contact{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+.ct-visual{
+  overflow:hidden;min-height:400px;
+  background:
+    radial-gradient(ellipse at 40% 50%,rgba(25,216,255,0.15) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 30%,rgba(10,40,160,0.2) 0%,transparent 50%),
+    #05070F;
+  position:relative;
+}
+.ct-globe-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+#contact-canvas{width:100%!important;height:100%!important;display:block}
+.ct-txt{padding:52px 56px;display:flex;flex-direction:column;justify-content:center;gap:20px}
+.ct-label{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--blue)}
+.ct-h{font-family:"Syne",sans-serif;font-weight:300;font-size:clamp(26px,3.8vw,52px);line-height:1.05;letter-spacing:-.02em}
+.ct-body{font-size:13px;line-height:1.72;color:var(--muted);max-width:300px}
+
+/* ─── FOOTER ─────────────────────────────── */
+footer{border-top:1px solid var(--line);padding:32px 48px;display:flex;align-items:center;justify-content:space-between}
+.f-logo{font-family:"Syne",sans-serif;font-weight:300;font-size:17px;letter-spacing:.08em;color:var(--muted)}
+.f-links{display:flex;gap:26px}
+.f-links a{font-size:11px;color:var(--faint);text-decoration:none;letter-spacing:.05em;transition:color .2s}
+.f-links a:hover{color:var(--muted)}
+.f-copy{font-size:11px;color:var(--faint)}
+
+/* ─── REVEAL ─────────────────────────────── */
+.rv{opacity:0;transform:translateY(16px)}
+.rv-r{opacity:0;transform:translateX(16px)}
+</style>
+</head>
+<body>
+
+<nav class="site-nav" id="nav" aria-label="Main navigation">
+  <a class="brand" href="../index.html">AFFINITY</a>
+  <div class="nav-links">
+    <a href="ai.html">AI</a>
+    <span aria-hidden="true">·</span>
+    <a href="gaia.html">GAIA</a>
+  </div>
+</nav>
+
+<!-- §1 HERO -->
+<section class="hero">
+  <div class="hero-inner">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-vignette"></div>
+  <div class="hero-text">
+    <div class="h-eye" id="gLab">Affinity Gaia</div>
+    <h1 class="h-h1" id="gH">Affinity<br>Gaia</h1>
+    <div class="hero-services">
+      <div class="hero-service" id="srv1">
+        <h3>On-Premise AI</h3>
+        <p>Your model, your hardware, your walls. Gaia runs entirely on your infrastructure with zero internet exposure.</p>
+      </div>
+      <div class="hero-service" id="srv2">
+        <h3>Massive RAG Libraries</h3>
+        <p>A building-wide intelligence with deep knowledge of every client, every file, and every case — always on hand.</p>
+      </div>
+      <div class="hero-service" id="srv3">
+        <h3>Custom AI Integration</h3>
+        <p>Don't have Gaia yet? We build the tools that fit your workflow — Gaia-powered or cloud-based, we make it work.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- §2 PRODUCT PANEL -->
+<div class="product rv">
+  <div class="p-badge">On-Premise Intelligence</div>
+  <div class="p-title">Affinity Gaia</div>
+  <div class="p-tag">Enterprise AI that never leaves your building.</div>
+</div>
+
+<!-- §3 AIRGAP — full viewport -->
+<section class="airgap" id="section-airgap">
+  <div class="airgap-grid"></div>
+  <div class="airgap-over">
+    <h2 class="airgap-h rv">Zero internet.<br><em>Complete intelligence.</em></h2>
+    <p class="airgap-sub rv">Gaia is deployed entirely on your own hardware. No cloud calls, no external APIs, no data leaving the building — ever. Every query stays within your infrastructure, giving you full sovereign control over your AI system.</p>
+  </div>
+</section>
+
+<!-- §4 RAG LIBRARIES -->
+<section class="rag" id="section-rag">
+  <div class="rag-cols">
+    <div class="rag-text rv">
+      <div class="rag-label">Knowledge at Scale</div>
+      <h2 class="rag-h">Every document.<br>Every case.<br>Instantly searchable.</h2>
+      <p class="rag-body">Gaia is the natural habitat for massive Retrieval-Augmented Generation libraries. Ingest your entire organization's knowledge base — client files, internal documents, case histories — and turn it into a single, queryable intelligence. A building-wide personal assistant that knows everything your organization knows.</p>
+    </div>
+    <div class="rag-visual">
+      <div class="rag-nodes" id="rag-nodes"></div>
+    </div>
+  </div>
+</section>
+
+<!-- §5 SECURITY STRIP -->
+<section class="sec-strip" id="section-security">
+  <div class="rv">
+    <div class="sec-label">Data Sovereignty</div>
+    <h2 class="sec-h">Your data never<br>leaves the room.</h2>
+    <p class="sec-body" style="margin-top:1.2rem">Traditional AI services route every query through external servers. Gaia doesn't. Your prompts, your documents, your responses — all processed locally. Full compliance with even the strictest data governance requirements.</p>
+  </div>
+  <div class="sec-stats rv">
+    <div class="sec-stat">
+      <div class="sec-stat-num">0</div>
+      <div class="sec-stat-lbl">External Connections</div>
+    </div>
+    <div class="sec-stat">
+      <div class="sec-stat-num">100%</div>
+      <div class="sec-stat-lbl">On-Premise</div>
+    </div>
+    <div class="sec-stat">
+      <div class="sec-stat-num">∞</div>
+      <div class="sec-stat-lbl">Scalable Knowledge</div>
+    </div>
+  </div>
+</section>
+
+<!-- §6 GAIA GLOBE SHOWCASE -->
+<section class="gaia-sect" id="gaia-globe">
+  <canvas id="gaia-canvas"></canvas>
+  <div class="gaia-vignette"></div>
+  <div class="gaia-text" style="margin-top:auto">
+    <div class="g-label" id="gSectLab">Affinity Gaia</div>
+    <h2 class="g-h" id="gSectH">Gaia</h2>
+    <div class="g-tag" id="gSectTag">Intelligence contained. Power unleashed.</div>
+  </div>
+</section>
+
+<!-- §7 MARQUEE + PROCESS -->
+<div class="mq">
+  <div class="mq-t">
+    <span class="mq-i">Air-gapped AI</span><span class="mq-s"> ◈ </span>
+    <span class="mq-i">On-premise deployment</span><span class="mq-s"> ◈ </span>
+    <span class="mq-i">Massive RAG libraries</span><span class="mq-s"> ◈ </span>
+    <span class="mq-i">Zero internet exposure</span><span class="mq-s"> ◈ </span>
+    <span class="mq-i">Air-gapped AI</span><span class="mq-s"> ◈ </span>
+    <span class="mq-i">On-premise deployment</span><span class="mq-s"> ◈ </span>
+    <span class="mq-i">Massive RAG libraries</span><span class="mq-s"> ◈ </span>
+    <span class="mq-i">Zero internet exposure</span><span class="mq-s"> ◈ </span>
+  </div>
+</div>
+<div class="process">
+  <div class="ps rv">
+    <div class="ps-n">01</div>
+    <div class="ps-t">We Deploy.</div>
+    <div class="ps-b">Gaia is installed on your hardware — fully configured, air-gapped, and ready to run without a single external connection.</div>
+  </div>
+  <div class="ps rv">
+    <div class="ps-n">02</div>
+    <div class="ps-t">We Configure.</div>
+    <div class="ps-b">We ingest your organization's knowledge base — documents, client files, internal data — and build your RAG library from the ground up.</div>
+  </div>
+  <div class="ps rv">
+    <div class="ps-n">03</div>
+    <div class="ps-t">We Evolve.</div>
+    <div class="ps-b">Your Gaia system grows with you. We continuously tune models, expand your libraries, and keep the system healthy as your needs change.</div>
+  </div>
+</div>
+
+<!-- §8 CONTACT -->
+<section class="contact" id="contact">
+  <div class="ct-visual">
+    <canvas id="contact-canvas"></canvas>
+  </div>
+  <div class="ct-txt rv-r">
+    <div class="ct-label">Deploy Gaia</div>
+    <h2 class="ct-h">Bring AI<br>in-house.</h2>
+    <p class="ct-body">Ready to run a model that never touches the internet? Affinity builds and maintains your Gaia system from day one — fully local, fully yours.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="rv">
+  <div class="f-logo">affinity</div>
+  <div class="f-links">
+    <a href="../index.html">Home</a>
+    <a href="ai.html">AI</a>
+    <a href="gaia.html">Gaia</a>
+  </div>
+  <div class="f-copy">© 2025 Affinity.</div>
+</footer>
+
+<script>
+/* ══ THREE.JS HELPERS ══════════════════════════════════════════ */
+function buildEnv(){
+  const sz=256,c=document.createElement('canvas');c.width=sz*4;c.height=sz*2;
+  const x=c.getContext('2d');
+  x.fillStyle='#05070E';x.fillRect(0,0,c.width,c.height);
+  const s1=x.createRadialGradient(sz*1.4,sz*.45,0,sz*1.4,sz*.45,sz*.9);
+  s1.addColorStop(0,'rgba(25,216,255,0.9)');s1.addColorStop(.4,'rgba(20,100,230,.28)');s1.addColorStop(1,'rgba(0,0,0,0)');
+  x.fillStyle=s1;x.fillRect(0,0,c.width,c.height);
+  const s2=x.createRadialGradient(sz*3,sz*1.5,0,sz*3,sz*1.5,sz*.5);
+  s2.addColorStop(0,'rgba(25,216,255,.45)');s2.addColorStop(1,'rgba(0,0,0,0)');
+  x.fillStyle=s2;x.fillRect(0,0,c.width,c.height);
+  const t=new THREE.CanvasTexture(c);t.mapping=THREE.EquirectangularReflectionMapping;return t;
+}
+function glowTex(stops){
+  const sz=512,c=document.createElement('canvas');c.width=c.height=sz;
+  const x=c.getContext('2d'),g=x.createRadialGradient(sz/2,sz/2,0,sz/2,sz/2,sz/2);
+  stops.forEach(([p,col])=>g.addColorStop(p,col));
+  x.fillStyle=g;x.fillRect(0,0,sz,sz);return new THREE.CanvasTexture(c);
+}
+function mkHalo(sc,sz,stops){
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz),
+    new THREE.MeshBasicMaterial({map:glowTex(stops),transparent:true,opacity:0,
+      depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide}));
+  sc.add(m);return m;
+}
+function addLights(sc){
+  sc.add(new THREE.AmbientLight(0x112244,4));
+  const kL=new THREE.PointLight(0xfff5e0,22,20);kL.position.set(-3.5,4.5,4.5);sc.add(kL);
+  sc.add(new THREE.PointLight(0x1a3a8a,5,16)).position.set(5,-2,2);
+  sc.add(new THREE.PointLight(0x4488cc,7,14)).position.set(.5,-1,-5);
+  const cL=new THREE.PointLight(0xfff5e0,0,8);sc.add(cL);
+  return{kL,cL};
+}
+
+/* ── GAIA FACTORY ──────────────────────────────────────────────
+   Renders a planet sphere with orbital rings, hex wireframe,
+   and contained particle field — representing local, air-gapped AI.
+──────────────────────────────────────────────────────────────── */
+function makeGaia(canvasEl, onReady){
+  let W=innerWidth, H=innerHeight;
+  const rdr=new THREE.WebGLRenderer({canvas:canvasEl,antialias:true,alpha:true});
+  rdr.setSize(W,H);rdr.setPixelRatio(Math.min(devicePixelRatio,2));
+  rdr.toneMapping=THREE.ACESFilmicToneMapping;rdr.toneMappingExposure=1.1;
+
+  const sc=new THREE.Scene();
+  const tl=new THREE.TextureLoader();
+  const earthDay =tl.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
+  const earthNrm =tl.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg');
+  const earthSpec=tl.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
+  const cam=new THREE.PerspectiveCamera(38,W/H,.1,200);
+  cam.position.set(0,0,7.5);
+  cam.lookAt(0,0,0);
+  sc.environment=buildEnv();
+
+  // Core sphere — Earth texture
+  const coreMat=new THREE.MeshPhysicalMaterial({
+    color:0x88cc88,map:earthDay,normalMap:earthNrm,normalScale:new THREE.Vector2(.6,.6),
+    roughnessMap:earthSpec,roughness:.75,metalness:.05,
+    clearcoat:.2,clearcoatRoughness:.2,envMapIntensity:1.2
+  });
+  const core=new THREE.Mesh(new THREE.SphereGeometry(1.55,64,64),coreMat);
+  sc.add(core);
+
+  // Hex wireframe overlay (subtle over Earth)
+  const wireMat=new THREE.MeshBasicMaterial({
+    color:0xffffff,wireframe:true,transparent:true,opacity:.04
+  });
+  const wire=new THREE.Mesh(new THREE.IcosahedronGeometry(1.61,4),wireMat);
+  sc.add(wire);
+
+  // Atmosphere shell — blue-white like Earth
+  const atmMat=new THREE.MeshBasicMaterial({
+    color:0x6aadff,transparent:true,opacity:.07,side:THREE.BackSide
+  });
+  sc.add(new THREE.Mesh(new THREE.SphereGeometry(1.84,32,32),atmMat));
+
+  // Orbital rings
+  function makeRing(inner,outer,rotX,rotZ,opacity){
+    const geo=new THREE.RingGeometry(inner,outer,128);
+    const mat=new THREE.MeshBasicMaterial({
+      color:0x19D8FF,side:THREE.DoubleSide,transparent:true,
+      opacity,blending:THREE.AdditiveBlending,depthWrite:false
+    });
+    const r=new THREE.Mesh(geo,mat);
+    r.rotation.x=rotX;r.rotation.z=rotZ;
+    sc.add(r);return r;
+  }
+  const ring1=makeRing(1.7,1.73,Math.PI/2,0,0.35);
+  const ring2=makeRing(2.05,2.07,Math.PI/3,0.4,0.22);
+  const ring3=makeRing(2.4,2.42,Math.PI/5,-0.5,0.15);
+
+  // Contained particles (bounded sphere = air-gapped metaphor)
+  const n=380,p=new Float32Array(n*3);
+  for(let i=0;i<n;i++){
+    const r=2.7+Math.random()*1.4;
+    const theta=Math.random()*Math.PI*2;
+    const phi=Math.acos(2*Math.random()-1);
+    p[i*3]=r*Math.sin(phi)*Math.cos(theta);
+    p[i*3+1]=r*Math.sin(phi)*Math.sin(theta);
+    p[i*3+2]=r*Math.cos(phi);
+  }
+  const pGeo=new THREE.BufferGeometry();
+  pGeo.setAttribute('position',new THREE.BufferAttribute(p,3));
+  sc.add(new THREE.Points(pGeo,new THREE.PointsMaterial({
+    color:0x19D8FF,size:.045,transparent:true,opacity:.35,
+    blending:THREE.AdditiveBlending,depthWrite:false
+  })));
+
+  // Halos
+  const hI=mkHalo(sc,5.5,[[0,'rgba(25,216,255,.7)'],[.18,'rgba(20,100,230,.3)'],[.45,'rgba(8,40,160,.08)'],[1,'rgba(0,0,0,0)']]);
+  const hO=mkHalo(sc,10,[[0,'rgba(15,80,200,.35)'],[.35,'rgba(6,28,135,.1)'],[1,'rgba(0,0,0,0)']]);
+
+  const{kL,cL}=addLights(sc);
+
+  let mx=0,my=0;
+  document.addEventListener('mousemove',e=>{mx=(e.clientX/W-.5)*2;my=(e.clientY/H-.5)*2;});
+
+  const clk=new THREE.Clock();let ry=0,px=0,py=0;
+  (function loop(){
+    requestAnimationFrame(loop);
+    const dt=clk.getDelta();
+    ry+=dt*.09;px+=(-my*.12-px)*.022;py+=(mx*.12-py)*.022;
+    core.rotation.y=ry+py*.4;core.rotation.x=px*.3;
+    wire.rotation.y=ry*.65;wire.rotation.x=px*.25;
+    ring1.rotation.y=ry*.25;
+    ring2.rotation.y=-ry*.18;
+    ring3.rotation.y=ry*.12;
+    hI.quaternion.copy(cam.quaternion);
+    hO.quaternion.copy(cam.quaternion);
+    rdr.render(sc,cam);
+  })();
+
+  function onResize(){
+    W=innerWidth;H=innerHeight;
+    cam.aspect=W/H;cam.updateProjectionMatrix();
+    rdr.setSize(W,H);
+  }
+  window.addEventListener('resize',onResize);
+
+  onReady({core,wire,ring1,ring2,ring3,hI,hO,cL,kL,coreMat});
+}
+
+/* ── §1 HERO GAIA ──────────────────────────── */
+makeGaia(
+  document.getElementById('hero-canvas'),
+  function({core,hI,hO,cL,coreMat}){
+    const S={sc:.001,hI:0,hO:0,cI:0};
+    const tl=anime.timeline({easing:'easeOutQuart'});
+    tl.add({targets:S,sc:1,duration:1500,easing:'easeOutBack(1.1)',update:()=>core.scale.setScalar(S.sc)})
+      .add({targets:S,hI:1,hO:.55,cI:5,duration:1000,update:()=>{hI.material.opacity=S.hI;hO.material.opacity=S.hO;cL.intensity=S.cI;}},'-=900')
+      .add({targets:'#nav',opacity:[0,1],duration:400,easing:'easeOutCubic'},0)
+      .add({targets:'#gLab',opacity:[0,1],translateY:[6,0],duration:450,easing:'easeOutCubic'},'-=250')
+      .add({targets:'#gH',opacity:[0,1],translateY:[16,0],duration:600,easing:'easeOutCubic'},'-=350');
+    setTimeout(()=>{
+      anime({targets:S,hI:[1,.55,1],hO:[.55,.2,.55],duration:5500,loop:true,easing:'easeInOutSine',update:()=>{hI.material.opacity=S.hI;hO.material.opacity=S.hO;}});
+      anime({targets:S,cI:[5,10,5],duration:5500,loop:true,easing:'easeInOutSine',update:()=>{cL.intensity=S.cI;}});
+    },1800);
+  }
+);
+
+/* ── §6 GAIA GLOBE SHOWCASE ──────────────────── */
+let gaiaGlobeReady=false;
+makeGaia(
+  document.getElementById('gaia-canvas'),
+  function({core,hI,hO,cL,coreMat}){
+    const S={sc:.001,hI:0,hO:0,cI:0};
+    new IntersectionObserver(entries=>{
+      if(!entries[0].isIntersecting||gaiaGlobeReady)return;
+      gaiaGlobeReady=true;
+      const tl=anime.timeline({easing:'easeOutQuart'});
+      tl.add({targets:S,sc:1,duration:1400,easing:'easeOutBack(1.1)',update:()=>core.scale.setScalar(S.sc)})
+        .add({targets:S,hI:1,hO:.6,cI:6,duration:1000,update:()=>{hI.material.opacity=S.hI;hO.material.opacity=S.hO;cL.intensity=S.cI;}},'-=850')
+        .add({targets:'#gSectLab',opacity:[0,1],translateY:[6,0],duration:450,easing:'easeOutCubic'},'-=400')
+        .add({targets:'#gSectH',opacity:[0,1],translateY:[16,0],duration:600,easing:'easeOutCubic'},'-=350')
+        .add({targets:'#gSectTag',opacity:[0,1],translateY:[8,0],duration:500,easing:'easeOutCubic'},'-=300');
+      setTimeout(()=>{
+        anime({targets:S,hI:[1,.5,1],hO:[.6,.2,.6],duration:5200,loop:true,easing:'easeInOutSine',update:()=>{hI.material.opacity=S.hI;hO.material.opacity=S.hO;}});
+        anime({targets:S,cI:[6,12,6],duration:5200,loop:true,easing:'easeInOutSine',update:()=>{cL.intensity=S.cI;}});
+      },1600);
+    },{threshold:.1}).observe(document.getElementById('gaia-globe'));
+  }
+);
+
+/* ── CONTACT mini gaia ───────────────────────── */
+(function(){
+  const canvas=document.getElementById('contact-canvas');
+  if(!canvas||typeof THREE==='undefined')return;
+  const container=canvas.parentElement;
+  let W=container.offsetWidth||400,H=container.offsetHeight||400;
+  canvas.style.position='absolute';canvas.style.inset='0';
+  const rdr=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  rdr.setSize(W,H);rdr.setPixelRatio(Math.min(devicePixelRatio,2));
+  rdr.toneMapping=THREE.ACESFilmicToneMapping;rdr.toneMappingExposure=1.1;
+  const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(38,W/H,.1,200);
+  cam.position.set(0,0,4.5);cam.lookAt(0,0,0);
+  sc.environment=buildEnv();
+  const tl2=new THREE.TextureLoader();
+  const coreMat=new THREE.MeshPhysicalMaterial({
+    color:0x88cc88,
+    map:tl2.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg'),
+    normalMap:tl2.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg'),
+    normalScale:new THREE.Vector2(.6,.6),
+    roughnessMap:tl2.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg'),
+    roughness:.75,metalness:.05,clearcoat:.2,clearcoatRoughness:.2,envMapIntensity:1.2
+  });
+  const core=new THREE.Mesh(new THREE.SphereGeometry(0.9,48,48),coreMat);sc.add(core);
+  const wire=new THREE.Mesh(new THREE.IcosahedronGeometry(0.94,3),new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true,transparent:true,opacity:.04}));sc.add(wire);
+  function mkRing(inner,outer,rx,rz,op){
+    const r=new THREE.Mesh(new THREE.RingGeometry(inner,outer,64),new THREE.MeshBasicMaterial({color:0x19D8FF,side:THREE.DoubleSide,transparent:true,opacity:op,blending:THREE.AdditiveBlending,depthWrite:false}));
+    r.rotation.x=rx;r.rotation.z=rz;sc.add(r);return r;
+  }
+  const r1=mkRing(1.15,1.17,Math.PI/2,0,0.4);
+  const r2=mkRing(1.4,1.41,Math.PI/3,0.4,0.25);
+  sc.add(new THREE.AmbientLight(0x112244,4));
+  const kL=new THREE.PointLight(0xfff5e0,22,20);kL.position.set(-3.5,4.5,4.5);sc.add(kL);
+  sc.add(new THREE.PointLight(0x4488cc,7,14)).position.set(.5,-1,-5);
+  window.addEventListener('resize',()=>{W=container.offsetWidth;H=container.offsetHeight;cam.aspect=W/H;cam.updateProjectionMatrix();rdr.setSize(W,H);});
+  const clk=new THREE.Clock();let ry=0;
+  (function loop(){requestAnimationFrame(loop);const dt=clk.getDelta();ry+=dt*.08;core.rotation.y=ry;wire.rotation.y=ry*.65;r1.rotation.y=ry*.25;r2.rotation.y=-ry*.18;rdr.render(sc,cam);})();
+})();
+
+/* ── RAG NODES VISUAL ────────────────────────── */
+(function(){
+  const wrap=document.getElementById('rag-nodes');
+  if(!wrap)return;
+  const count=12;
+  const positions=[];
+  for(let i=0;i<count;i++){
+    const node=document.createElement('div');
+    node.className='rag-node';
+    const x=15+Math.random()*70,y=15+Math.random()*70;
+    node.style.left=x+'%';node.style.top=y+'%';
+    node.style.animationDelay=(Math.random()*2)+'s';
+    wrap.appendChild(node);
+    positions.push({x,y,el:node});
+  }
+  // Draw SVG lines between nearby nodes
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none';
+  for(let i=0;i<positions.length;i++){
+    for(let j=i+1;j<positions.length;j++){
+      const dx=positions[i].x-positions[j].x,dy=positions[i].y-positions[j].y;
+      if(Math.sqrt(dx*dx+dy*dy)<28){
+        const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+        line.setAttribute('x1',positions[i].x+'%');line.setAttribute('y1',positions[i].y+'%');
+        line.setAttribute('x2',positions[j].x+'%');line.setAttribute('y2',positions[j].y+'%');
+        line.setAttribute('stroke','rgba(25,216,255,0.18)');line.setAttribute('stroke-width','1');
+        svg.appendChild(line);
+      }
+    }
+  }
+  wrap.appendChild(svg);
+  // Pulse animation
+  positions.forEach(({el},i)=>{
+    anime({targets:el,opacity:[0.7,0.2,0.7],scale:[1,1.4,1],duration:2000+i*300,loop:true,easing:'easeInOutSine',delay:i*200});
+  });
+})();
+
+/* ── SCROLL REVEALS ────────────────────────── */
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target;
+    anime({
+      targets:el,opacity:[0,1],
+      translateY:el.classList.contains('rv')?[16,0]:0,
+      translateX:el.classList.contains('rv-r')?[16,0]:0,
+      duration:700,easing:'easeOutCubic'
+    });
+    ro.unobserve(el);
+  });
+},{threshold:.06,rootMargin:'0px 0px -32px 0px'});
+document.querySelectorAll('.rv,.rv-r').forEach(el=>{
+  el.style.opacity='0';
+  ro.observe(el);
+});
+
+/* ── Hero scroll reveal ─────────────────────── */
+(function(){
+  const services=[
+    {el:document.getElementById('srv1'),threshold:0.15},
+    {el:document.getElementById('srv2'),threshold:0.35},
+    {el:document.getElementById('srv3'),threshold:0.55},
+  ];
+  function onScroll(){
+    const heroH=document.querySelector('.hero').offsetHeight;
+    const progress=window.scrollY/(heroH-window.innerHeight);
+    services.forEach(({el,threshold})=>{
+      if(progress>=threshold&&el)el.classList.add('visible');
+    });
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+})();
+</script>
+</body>
+</html>

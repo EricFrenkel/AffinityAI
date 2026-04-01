@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Affinity</title>
-    <meta name="description" content="Affinity is a dual-sector technology and marketing firm.">
+    <title>Affinity | AI Automation, Data-Driven Marketing & Business Growth</title>
+    <meta name="description" content="Affinity helps businesses grow with cutting-edge AI tools, intelligent automation, and on-premise AI systems. Stay ahead with Affinity AI and Affinity Gaia.">
+    <meta name="keywords" content="AI automation, business growth, on-premise AI, AI tools, local AI model, RAG libraries, small business AI, Affinity AI, Affinity Gaia">
+    <meta property="og:title" content="Affinity | AI Automation, Data-Driven Marketing & Business Growth">
+    <meta property="og:description" content="Affinity helps businesses grow with cutting-edge AI tools, intelligent automation, and data-driven marketing strategies.">
+    <meta property="og:type" content="website">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -39,16 +43,18 @@
         .nav-links { display: flex; align-items: center; gap: 1.25rem; }
         .nav-links a { font-family: "DM Mono", monospace; font-size: 0.75rem; letter-spacing: 0.15em; color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s; }
         .nav-links a:hover { color: var(--cream); }
+        .nav-links a[href*="ai"]:hover { color: #8b0000; }
+        .nav-links a[href*="photos"]:hover { color: #1055cc; }
         .nav-links span { color: rgba(255,255,255,0.25); font-size: 0.7rem; }
 
         /*
          * HERO SHELL — height must equal WORDMARK_VH + (PANEL_COUNT × PANEL_VH)
-         * JS constants:  WORDMARK_VH=60  PANEL_VH=60  PANEL_COUNT=5
-         * Total:         60 + 300 = 360vh
+         * JS constants:  WORDMARK_VH=60  PANEL_VH=60  PANEL_COUNT=3
+         * Total:         100 + 60 + 180 = 340vh
          */
         .scroll-shell {
             position: relative;
-            height: 360vh;
+            height: 340vh;
             background: var(--hero-gradient);
         }
         .scroll-shell-sticky {
@@ -73,9 +79,10 @@
         #loop-canvas { width: 100%; height: 100%; display: block; opacity: 0.75; }
 
         /* Wordmark */
-        .hero-wordmark { position: absolute; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; }
+        .hero-wordmark { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; gap: 0.75rem; }
         .hero-wordmark.hidden { opacity: 0; transform: scale(0.93) translateY(-14px); pointer-events: none; }
         .hero-wordmark-text { font-family: "Syne", sans-serif; font-weight: 800; font-size: clamp(2.8rem, 8vw, 6.5rem); letter-spacing: 0.2em; color: var(--cream); text-transform: uppercase; text-shadow: 0 0 80px rgba(253,241,224,0.15); animation: wordmarkIn 1s cubic-bezier(0.4,0,0.2,1) both; }
+        .hero-wordmark-sub { font-family: "DM Mono", monospace; font-size: clamp(0.7rem, 1.4vw, 1rem); letter-spacing: 0.22em; color: rgba(253,241,224,0.5); text-transform: uppercase; animation: wordmarkIn 1s 0.25s cubic-bezier(0.4,0,0.2,1) both; }
         @keyframes wordmarkIn {
             from { opacity: 0; transform: scale(0.94) translateY(16px); letter-spacing: 0.35em; }
             to   { opacity: 1; transform: scale(1) translateY(0); letter-spacing: 0.2em; }
@@ -121,17 +128,22 @@
         .section { padding: 7rem 6vw; }
 
         /* Build */
-        .build-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; max-width: 1200px; margin: 0 auto; align-items: start; }
-        .build-number { font-family: "Syne", sans-serif; font-size: 5rem; font-weight: 800; color: rgba(255,255,255,0.05); line-height: 1; margin-bottom: 0.5rem; }
-        .build-left h2 { font-family: "Syne", sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem); color: var(--cream); line-height: 1.15; }
-        .build-right { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .build-cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 1400px; margin: 0 auto; }
+        .build-number { font-family: "Syne", sans-serif; font-size: 6rem; font-weight: 800; color: rgba(255,255,255,0.05); line-height: 1; margin-top: 0.5rem; }
+        .divisions-heading { text-align: center; padding-bottom: 3rem; }
+        .divisions-heading h2 { font-family: "Syne", sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem); color: var(--cream); line-height: 1.15; margin-bottom: 0.5rem; }
+        .glow-02 { color: rgba(255,255,255,0.05); -webkit-text-stroke: 1px rgba(160,20,20,0.5); animation: glowTrace 3s ease-in-out infinite; }
+        @keyframes glowTrace {
+            0%, 100% { filter: drop-shadow(0 0 6px rgba(139,0,0,0.3)) drop-shadow(0 0 14px rgba(139,0,0,0.15)); -webkit-text-stroke: 1px rgba(150,20,20,0.4); }
+            50% { filter: drop-shadow(0 0 16px rgba(180,20,20,0.65)) drop-shadow(0 0 36px rgba(139,0,0,0.35)); -webkit-text-stroke: 1px rgba(200,40,40,0.75); }
+        }
         .build-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1.5rem; border-radius: 4px; transition: background 0.25s; }
         .build-card:hover { background: rgba(255,255,255,0.055); }
         .build-card h3 { font-family: "Syne", sans-serif; font-size: 1rem; color: var(--cream); margin-bottom: 0.6rem; }
         .build-card p { font-size: 0.88rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
 
         /* Divisions */
-        .section-divisions { display: flex; flex-direction: column; gap: 5rem; max-width: 1200px; margin: 0 auto; padding: 7rem 6vw; }
+        .section-divisions { display: flex; flex-direction: column; gap: 5rem; max-width: 1200px; margin: 0 auto; padding: 5rem 6vw 7rem; }
         .division-row { display: flex; align-items: center; gap: 5rem; }
         .division-row.reverse { flex-direction: row-reverse; }
         .division-content { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 2.5rem; border-radius: 12px; }
@@ -220,8 +232,7 @@
         .reveal.visible { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 768px) {
-            .build-layout { grid-template-columns: 1fr; gap: 2rem; }
-            .build-right { grid-template-columns: 1fr; }
+            .build-cards-row { grid-template-columns: 1fr 1fr; gap: 1rem; }
             .division-row, .division-row.reverse { flex-direction: column; gap: 2rem; }
             .division-visual { flex: none; width: 100%; height: 260px; }
             .stats-grid { grid-template-columns: 1fr; }
@@ -241,7 +252,7 @@
         <div class="nav-links">
             <a href="pages/ai.html">AI</a>
             <span aria-hidden="true">·</span>
-            <a href="pages/photos.html">STAR</a>
+            <a href="pages/gaia.html">GAIA</a>
         </div>
     </nav>
 
@@ -260,13 +271,14 @@
 
                 <div class="hero-wordmark" id="hero-wordmark" aria-hidden="true">
                     <span class="hero-wordmark-text">AFFINITY</span>
+                    <span class="hero-wordmark-sub">A new standard for AI security.</span>
                 </div>
 
                 <div class="panel-layer" id="panel-layer">
                     <article class="panel" data-panel-index="0">
                         <div class="hero-main-content">
-                            <p class="panel-label">Affinity</p>
-                            <h2>Your Edge in an AI-Driven World</h2>
+                            <p class="panel-label">01</p>
+                            <h2>An Artificial Intelligence Model that never touches the internet.</h2>
                             <hr class="panel-rule">
                             <p>Affinity helps companies stay current with the latest AI tools — optimizing your business to the ever-changing landscape so you can go head-to-head with industry giants and their millions in funding.</p>
                             <div class="hero-badges">
@@ -282,22 +294,15 @@
                     </article>
 
                     <article class="panel" data-panel-index="1">
-                        <p class="panel-label">Affinity AI</p>
-                        <h2>Always Current. Always Competitive.</h2>
+                        <p class="panel-label">02</p>
+                        <h2>The Natural Habitat for Massive RAG Libraries</h2>
                         <hr class="panel-rule">
-                        <p>The AI landscape shifts weekly. We track it, implement it, and deploy it — so your business operates on the cutting edge while your competitors are still catching up.</p>
+                        <p>Imagine a building-wide personal assistant with deep, instant knowledge of every client, every file, every case. Affinity Gaia is purpose-built to ingest and reason over enormous retrieval-augmented generation libraries — turning your organization's entire knowledge base into a single, queryable intelligence that works for everyone, all at once.</p>
                     </article>
 
                     <article class="panel" data-panel-index="2">
-                        <p class="panel-label">Affinity Star</p>
-                        <h2>A Brand That Stays Relevant</h2>
-                        <hr class="panel-rule">
-                        <p>Affinity Star keeps your brand front-and-center — powered by real promotional trend data flowing from Affinity AI's backend, so every campaign is informed by what's actually working right now.</p>
-                    </article>
-
-                    <article class="panel" data-panel-index="3">
-                        <p class="panel-label">Impact</p>
-                        <h2>Automation Coverage Target</h2>
+                        <p class="panel-label">03</p>
+                        <h2>Customized consulting for all your AI needs</h2>
                         <hr class="panel-rule">
                         <p class="metric-wrap">
                             <span id="coverage-counter">0</span><span>%</span>
@@ -347,6 +352,10 @@
             </section>
 
             <section class="section-divisions" id="divisions">
+                <div class="divisions-heading reveal">
+                    <h2>Two Divisions. One Mission.</h2>
+                    <p class="build-number glow-02">02</p>
+                </div>
                 <!-- Division 01 — Affinity AI with Möbius strip -->
                 <div class="division-row reveal" id="division-ai">
                     <div class="division-visual" aria-label="Affinity AI Möbius visualization">
@@ -360,13 +369,13 @@
                     </div>
                 </div>
 
-                <!-- Division 02 — Affinity Star -->
+                <!-- Division 02 — Affinity Gaia -->
                 <div class="division-row reverse reveal">
                     <div class="division-content">
                         <p class="division-label">// division 02</p>
-                        <h3>Affinity Star</h3>
-                        <p>Affinity Star keeps your brand relevant on the front end — inspired by real promotional trend data tracked by Affinity AI's backend, so every campaign stays ahead of the curve and in front of the right audience.</p>
-                        <a class="cta-button" href="pages/photos.html">Explore Star →</a>
+                        <h3>Affinity Gaia</h3>
+                        <p>Affinity Gaia is an on-premise AI model that never touches the internet — purpose-built for organizations that need enterprise-grade intelligence with absolute data sovereignty and no cloud exposure.</p>
+                        <a class="cta-button" href="pages/gaia.html">Explore Gaia →</a>
                     </div>
                     <div class="division-visual" style="display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
                         <div class="rotating-square" aria-hidden="true"></div>
@@ -438,8 +447,8 @@
                             <p>Latest AI Tool Deployment<br>Automation Pipelines<br>AI Agents &amp; RAG Systems<br>Continuous Optimization</p>
                         </div>
                         <div>
-                            <h3>AFFINITY STAR</h3>
-                            <p>Social Media Management<br>Live Sound Engineering<br>Pro Photography<br>Trend-Informed Campaigns</p>
+                            <h3>AFFINITY GAIA</h3>
+                            <p>On-Premise AI Deployment<br>Massive RAG Libraries<br>Air-Gapped Infrastructure<br>Continuous Model Tuning</p>
                         </div>
                     </div>
                     <div class="bottom-strip">© 2025 AFFINITY · ALL RIGHTS RESERVED</div>
@@ -455,7 +464,7 @@
     // ─────────────────────────────────────────────────────────────────
     const WORDMARK_VH  = 60;
     const PANEL_VH     = 60;
-    const PANEL_COUNT  = 5;
+    const PANEL_COUNT  = 3;
 
     const PANELS     = [...document.querySelectorAll('.panel')];
     const wordmark   = document.getElementById('hero-wordmark');

@@ -374,39 +374,77 @@
 
         .waveform-visual {
             display: grid;
-            gap: 0.8rem;
+            gap: 0.75rem;
             width: 100%;
+        }
+
+        .wf-label {
+            font-family: "DM Mono", monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.2);
         }
 
         .wave-bars {
             display: grid;
             grid-template-columns: repeat(24, 1fr);
             gap: 4px;
-            align-items: end;
-            height: 120px;
+            align-items: center;
+            height: 60px;
         }
 
         .wave-bars span {
             display: block;
             width: 100%;
-            background: linear-gradient(180deg, rgba(198, 167, 94, 0.9), rgba(159, 25, 25, 0.8));
-            height: 30px;
-            animation: wave 1.6s ease-in-out infinite;
-            animation-delay: calc(var(--i) * 0.03s);
+            background: rgba(180, 200, 230, 0.35);
+            height: 20px;
+            animation: wave 2.2s ease-in-out infinite;
+            animation-delay: calc(var(--i) * 0.06s);
         }
 
         @keyframes wave {
-            0%, 100% { transform: scaleY(0.4); opacity: 0.8; }
-            50% { transform: scaleY(1.2); opacity: 1; }
+            0%, 100% { transform: scaleY(0.3); opacity: 0.4; }
+            50% { transform: scaleY(1); opacity: 0.7; }
         }
 
         .transcript {
             font-family: "DM Mono", monospace;
-            color: var(--muted);
-            background: rgba(12, 8, 9, 0.8);
-            border: 1px solid rgba(139, 0, 0, 0.2);
-            padding: 0.8rem;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.35);
+            background: rgba(12, 8, 9, 0.6);
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 0.7rem 0.8rem;
             line-height: 1.7;
+        }
+
+        .affinity-build-panel {
+            background: rgba(5, 8, 16, 0.85);
+            border: 1px solid rgba(139,0,0,0.18);
+            padding: 0.75rem 0.9rem;
+            font-family: "DM Mono", monospace;
+            font-size: 0.68rem;
+        }
+
+        .build-panel-label {
+            color: rgba(139,0,0,0.6);
+            letter-spacing: 0.15em;
+            margin-bottom: 0.5rem;
+        }
+
+        .build-line {
+            display: block;
+            color: rgba(255,255,255,0.22);
+            line-height: 1.9;
+            opacity: 0;
+            animation: buildFadeIn 0.5s ease forwards;
+            animation-delay: var(--d);
+        }
+
+        .build-line.done { color: rgba(139,0,0,0.7); }
+
+        @keyframes buildFadeIn {
+            from { opacity: 0; transform: translateX(-4px); }
+            to   { opacity: 1; transform: translateX(0); }
         }
 
         .ui-showcase {
@@ -667,7 +705,7 @@
         <div class="nav-links">
             <a href="ai.html">AI</a>
             <span aria-hidden="true">·</span>
-            <a href="photos.html">PHOTOS</a>
+            <a href="gaia.html">GAIA</a>
         </div>
     </nav>
 
@@ -692,7 +730,7 @@
             </div>
             <div class="hero-overlay">
                 <h1 class="glitch-target">AFFINITY AI</h1>
-                <p class="hero-blurb">Custom intelligence systems built around your workflow — not the other way around.</p>
+                <p class="hero-blurb">Custom intelligence systems designed to reduce overhead.</p>
             </div>
             <div class="scroll-hint" aria-hidden="true"></div>
         </section>
@@ -700,7 +738,7 @@
         <section class="section section-build" id="process">
             <div class="section-inner">
                 <p class="panel-label">Process</p>
-                <h2 class="section-heading">Built With Your Team In The Loop</h2>
+                <h2 class="section-heading">100x More With 100x Less</h2>
                 <div class="process-grid">
                     <article class="process-card reveal" style="transition-delay: 0s;">
                         <span class="roman">I</span>
@@ -709,8 +747,8 @@
                     </article>
                     <article class="process-card reveal" style="transition-delay: 120ms;">
                         <span class="roman">II</span>
-                        <h3>Build With Purpose</h3>
-                        <p>We design custom AI systems — RAG platforms, automation pipelines, and agentic workflows — around your exact operations. No off-the-shelf tools, no generic deployments.</p>
+                        <h3>AI Chaining. Unique Products.</h3>
+                        <p>As an agency, we're never locked into a single tool. We string together the best leading and emerging AI systems — chaining them into custom pipelines that produce capabilities no single platform can match.</p>
                     </article>
                     <article class="process-card reveal" style="transition-delay: 240ms;">
                         <span class="roman">III</span>
@@ -734,7 +772,7 @@
                 </div>
                 <div class="division-content">
                     <p class="division-label">// RAG SYSTEMS</p>
-                    <h3>Your Knowledge. Instantly Queryable.</h3>
+                    <h3>Instantly Queryable. For Less.</h3>
                     <p>Retrieval-Augmented Generation turns your internal documents, SOPs, and data into a live knowledge layer your team can query in plain language — with source-accurate, context-aware answers every time.</p>
                     <span class="badge">CORE CAPABILITY</span>
                 </div>
@@ -797,13 +835,18 @@
                 </div>
                 <div class="division-visual">
                     <div class="waveform-visual" aria-hidden="true">
+                        <p class="wf-label">// client.audio — live session</p>
                         <div class="wave-bars">
-                            <!-- 24 bars -->
                             <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span><span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span><span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span><span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span><span style="--i:12"></span><span style="--i:13"></span><span style="--i:14"></span><span style="--i:15"></span><span style="--i:16"></span><span style="--i:17"></span><span style="--i:18"></span><span style="--i:19"></span><span style="--i:20"></span><span style="--i:21"></span><span style="--i:22"></span><span style="--i:23"></span>
                         </div>
                         <div class="transcript">
                             <div>[00:01:42] Client: "We need faster reporting across teams."</div>
-                            <div>[00:02:15] Affinity: "Understood — here's what we can automate first."</div>
+                        </div>
+                        <div class="affinity-build-panel">
+                            <p class="build-panel-label">// affinity.ai — drafting in background</p>
+                            <span class="build-line" style="--d:0.4s">→ mapping workflow bottlenecks...</span>
+                            <span class="build-line" style="--d:1.2s">→ identifying automation targets...</span>
+                            <span class="build-line done" style="--d:2.0s">→ solution.draft — saved</span>
                         </div>
                     </div>
                 </div>
